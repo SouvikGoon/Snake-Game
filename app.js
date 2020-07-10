@@ -14,7 +14,7 @@ function Snake(){
     this.tail = [];
 
     this.draw = function(){
-        ctx.fillStyle = "#ffbd69";
+        ctx.fillStyle = "#fff1cf";
         for (let i = 0; i < this.tail.length; i++) {
             ctx.fillRect(this.tail[i].x, this.tail[i].y, 10, 10);  
         }
@@ -36,20 +36,28 @@ function Snake(){
     this.changeDirection = function(key){
         switch (key) {
             case "ArrowUp":
-                this.xSpeed = 0;
-                this.ySpeed = -1;
+                if(this.ySpeed !== 1){
+                    this.xSpeed = 0;
+                    this.ySpeed = -1;
+                }
                 break;
             case "ArrowDown":
-                this.xSpeed = 0;
-                this.ySpeed = 1;
+                if(this.ySpeed !== -1){
+                    this.xSpeed = 0;
+                    this.ySpeed = 1;
+                }
                 break;
             case "ArrowLeft":
-                this.xSpeed = -1;
-                this.ySpeed = 0;
+                if(this.xSpeed !== 1){
+                    this.xSpeed = -1;
+                    this.ySpeed = 0;
+                }
                 break;
             case "ArrowRight":
-                this.xSpeed = 1;
-                this.ySpeed = 0;
+                if(this.xSpeed !== -1){
+                    this.xSpeed = 1;
+                    this.ySpeed = 0;
+                }
                 break;
             default:
                 console.log(key);
@@ -65,6 +73,15 @@ function Snake(){
         return false;
     }
 
+    this.isAlive = function(){
+        for(let i = 0; i < this.tail.length; i++){
+            if(this.x === this.tail[i].x && this.y === this.tail[i].y){
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
 
 //######################## Food constructor function ###########################
@@ -74,7 +91,7 @@ function Food(){
     this.y;
 
     this.draw = function(){
-        ctx.fillStyle = "#ff0000";
+        ctx.fillStyle = "#ffd369";
         ctx.fillRect(this.x, this.y, 10, 10);
     }
     
@@ -86,36 +103,59 @@ function Food(){
 
 //##############################################################################
 
-food.pickLocation();
+function startGame(){
+    food.pickLocation();
 
-function stopGame(){
-    clearInterval(startInterval);
-    alert("Refresh page to restart!")
-}
+    function stopGame(){
+        //console.log("frame generation stopped");
+        
+        clearInterval(startInterval);
+        let restartButton = document.querySelector(".restart");
+        restartButton.setAttribute("style", "z-index:1");
+        canvas.setAttribute("style", "opacity:0.2");
+        
+    }
 
-var startInterval = setInterval(function(){
-        if(snake.hasEaten(food)){
-            food.pickLocation();
-        }
-        if(snake.x > 400 || snake.x < 0 || snake.y > 400 || snake.y < 0){
+    var startInterval = setInterval(function(){
+        //console.log("frame generated");
+        
+        if(snake.isAlive()){
+            if(snake.hasEaten(food)){
+                food.pickLocation();
+            }
+            if(snake.x + 10 > 400 || snake.x < 0 || snake.y + 10 > 400 || snake.y < 0){
+                stopGame();
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            snake.update();
+            food.draw();
+            snake.draw();
+        } else {
             stopGame();
         }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        snake.update();
-        food.draw();
-        snake.draw();
-
     },100);
 
-document.addEventListener("keydown", function(event){
-    snake.changeDirection(event.key);
-})
-
-var controlButtons = document.querySelectorAll(".move-btn");
-for(let i=0; i<controlButtons.length; i++){
-    controlButtons[i].addEventListener("click", function(event){
-        const butttonDirection = event.path[0].attributes.class.ownerElement.classList[1];
-        snake.changeDirection(butttonDirection);
-        
+    document.addEventListener("keydown", function(event){
+        snake.changeDirection(event.key);
+        buttonAnimation(event.key);
     })
+
+    var controlButtons = document.querySelectorAll(".move-btn");
+    for(let i=0; i<controlButtons.length; i++){
+        controlButtons[i].addEventListener("click", function(event){
+            const butttonDirection = event.path[0].attributes.class.ownerElement.classList[1];
+            snake.changeDirection(butttonDirection);
+            buttonAnimation(butttonDirection);
+        })
+    }
+
+    function buttonAnimation(currentButton){
+        let selectedButton = document.querySelector("."+currentButton);
+        selectedButton.classList.add("pressed");
+        setTimeout(() => selectedButton.classList.remove("pressed"), 100);
+    }
 }
+
+window.onload = startGame;
+
+

@@ -4,17 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake Game</title>
+    <script src="https://kit.fontawesome.com/b41f1e8e6f.js" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <h1>SNAKE 🐍</h1>
+    <button class="restart" onclick="window.location.reload()">Restart</button>
     <canvas id="game-grid" width="400" height="400">Game space</canvas>
     <div class="controls">
-        <button class="move-btn ArrowUp">UP</button>
-        <button class="move-btn ArrowDown">DOWN</button>
-        <button class="move-btn ArrowLeft">LEFT</button>
-        <button class="move-btn ArrowRight">RIGHT</button>
+        <div class="up">
+            <button class="move-btn ArrowUp fas fa-chevron-circle-up"></button>
+        </div>
+        <div class="left-right">
+            <button class="move-btn ArrowLeft fas fa-chevron-circle-left"></button>
+            <button class="move-btn ArrowRight fas fa-chevron-circle-right"></button>
+        </div>
+        <div class="down">
+            <button class="move-btn ArrowDown fas fa-chevron-circle-down"></button>
+        </div>
     </div>
 </body>
 <script type="text/javascript" src="./app.js"></script>
