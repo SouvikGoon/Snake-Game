@@ -2,6 +2,7 @@ const canvas = document.getElementById("game-grid");
 const ctx = canvas.getContext("2d");
 var snake = new Snake();
 var food = new Food();
+var score = 0;
 
 //######################## Snake constructor function ###########################
 
@@ -68,6 +69,7 @@ function Snake(){
     this.hasEaten = function(food){
         if(this.x === food.x && this.y === food.y){
             this.total++;
+            score += 10;
             return true;
         }
         return false;
@@ -110,10 +112,12 @@ function startGame(){
         //console.log("frame generation stopped");
         
         clearInterval(startInterval);
+        let finalScore = document.querySelector(".score");
+        finalScore.setAttribute("style", "z-index:1");
+        finalScore.innerHTML = "Score : " + score;
         let restartButton = document.querySelector(".restart");
         restartButton.setAttribute("style", "z-index:1");
         canvas.setAttribute("style", "opacity:0.2");
-        
     }
 
     var startInterval = setInterval(function(){
